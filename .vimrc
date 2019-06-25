@@ -1,17 +1,22 @@
 set nocompatible
-" filetype plugin indent on
-" set audoindent
-" set number
-" set scrolloff=3
+syntax enable
+filetype plugin indent on
 
+" Detect file change
+autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+autocmd FileChangedShellPost *
+  \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+
+" Personalize vim
+set number
+set scrolloff=3
 set mouse=a
 set whichwrap+=<,>,h,l,[,]
 set ts=4
 set sts=0
 set sw=0
 
-hi CursorLine term=none cterm=none ctermbg=3
-
+set cursorline
 
 " Vim-Plug automatic installation
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -26,14 +31,13 @@ call plug#begin('~/.vim/plugged')
 " Plug 'scrooloose/nerdtree'
 " Plug 'tpope/vim-sensible'
 
+" Vim language server protocol
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-" Initialize plugin system
-call plug#end()
-
+" Clangd autocomplete
 if executable('clangd')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'clangd',
@@ -41,3 +45,34 @@ if executable('clangd')
         \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
         \ })
 endif
+
+" pip install python-language-server
+if executable('pyls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+endif
+
+" Theme and Visuals
+Plug 'erichdongubler/vim-sublime-monokai'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Initialize plugin system
+call plug#end()
+
+
+
+" Theme and Visuals
+colorscheme sublimemonokai
+let g:airline_theme='luna'
+let g:airline_powerline_fonts = 1
+
+
+
+
+
+
+
